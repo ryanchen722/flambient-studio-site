@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>加入雲端帳本｜我的我的 mine mine</title>
+<style>
+  :root { color-scheme: light dark; --bg:#fbf7ee; --fg:#2b2a33; --mute:#6f6c78; --accent:#6b4eff; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#17161c; --fg:#f2f0f7; --mute:#a29fb0; } }
+  body { margin:0; background:var(--bg); color:var(--fg); font:17px/1.6 -apple-system, "PingFang TC", sans-serif; }
+  main { max-width:480px; margin:0 auto; padding:56px 24px; text-align:center; }
+  h1 { font-size:26px; margin:0 0 8px; }
+  p { color:var(--mute); }
+  a.btn { display:block; margin:14px 0; padding:15px; border-radius:100px; text-decoration:none; font-weight:600; }
+  a.primary { background:var(--accent); color:#fff; }
+  a.plain { border:1.5px solid var(--mute); color:var(--fg); }
+  .hidden { display:none; }
+  small { color:var(--mute); }
+</style>
+</head>
+<body>
+<main>
+  <h1>加入雲端帳本</h1>
+  <p id="msg">管理者邀請你一起記帳。</p>
+  <div id="ok" class="hidden">
+    <a id="open" class="btn primary" href="#">用「我的我的」App 加入</a>
+    <a class="btn plain" href="https://apps.apple.com/app/id6835258462">還沒安裝？前往 App Store</a>
+    <p><small>需要登入 iCloud。安裝好 App 後，回到這個頁面再按一次上面的按鈕。</small></p>
+  </div>
+  <div id="bad" class="hidden"><p>這個邀請連結不完整，請管理者重新傳給你。</p></div>
+</main>
+<script>
+  const params = new URLSearchParams(location.search);
+  // 短格式 s（分享代碼）與 t（邀請碼）；也看得懂舊的 share、token
+  const code = params.get("s") || (params.get("share") || "").replace("https://www.icloud.com/share/", "");
+  const token = params.get("t") || params.get("token") || "";
+  // 只接受合理的分享代碼與邀請碼，避免被拿來導去別的網站
+  const valid = /^[A-Za-z0-9_-]{6,80}$/.test(code) && /^[A-Za-z0-9]{6,32}$/.test(token);
+  if (valid) {
+    const app = "mineminecloud://join?s=" + encodeURIComponent(code) + "&t=" + encodeURIComponent(token);
+    document.getElementById("open").href = app;
+    document.getElementById("ok").classList.remove("hidden");
+    setTimeout(() => { location.href = app; }, 400);
+  } else {
+    document.getElementById("msg").classList.add("hidden");
+    document.getElementById("bad").classList.remove("hidden");
+  }
+</script>
+</body>
+</html>
